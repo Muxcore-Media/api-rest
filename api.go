@@ -10,6 +10,12 @@ import (
 	"github.com/Muxcore-Media/core/pkg/contracts"
 )
 
+func init() {
+	contracts.Register(func(deps contracts.ModuleDeps) contracts.Module {
+		return NewModule(deps.Registry, deps.Routes)
+	})
+}
+
 type Module struct {
 	reg    contracts.ServiceRegistry
 	routes contracts.RouteRegistrar
