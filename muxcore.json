@@ -1,0 +1,11 @@
+{
+  "name": "REST API",
+  "description": "REST API endpoints for MuxCore module and system management. Provides /api/v1/modules and /api/v1/modules/{id}.",
+  "version": "1.0.0",
+  "icon": "",
+  "author": "MuxCore",
+  "kind": "api",
+  "capabilities": ["api.rest", "api.v1"],
+  "dependencies": [],
+  "homepage": "https://github.com/Muxcore-Media/api-rest"
+}
