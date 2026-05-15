@@ -30,7 +30,7 @@ func (m *Module) Info() contracts.ModuleInfo {
 		ID:           "api-rest",
 		Name:         "REST API",
 		Version:      "1.0.0",
-		Kind:         contracts.ModuleKindAPI,
+		Kinds:        []contracts.ModuleKind{contracts.ModuleKindAPI},
 		Description:  "REST API endpoints for module and system management",
 		Author:       "MuxCore",
 		Capabilities: []string{"api.rest", "api.v1"},
@@ -67,6 +67,7 @@ func (m *Module) handleModules(w http.ResponseWriter, r *http.Request) {
 		Name         string   `json:"name"`
 		Version      string   `json:"version"`
 		Kind         string   `json:"kind"`
+		Kinds        []string `json:"kinds"`
 		Description  string   `json:"description"`
 		Capabilities []string `json:"capabilities"`
 		// State is not exposed via ServiceRegistry by design — it's internal to core
@@ -74,11 +75,16 @@ func (m *Module) handleModules(w http.ResponseWriter, r *http.Request) {
 
 	modules := make([]moduleJSON, 0, len(entries))
 	for _, e := range entries {
+		kinds := make([]string, len(e.Info.Kinds))
+		for i, k := range e.Info.Kinds {
+			kinds[i] = string(k)
+		}
 		modules = append(modules, moduleJSON{
 			ID:           e.Info.ID,
 			Name:         e.Info.Name,
 			Version:      e.Info.Version,
-			Kind:         string(e.Info.Kind),
+			Kind:         kinds[0],
+			Kinds:        kinds,
 			Description:  e.Info.Description,
 			Capabilities: e.Info.Capabilities,
 		})
@@ -109,11 +115,16 @@ func (m *Module) handleModuleByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	kinds := make([]string, len(entry.Info.Kinds))
+	for i, k := range entry.Info.Kinds {
+		kinds[i] = string(k)
+	}
 	writeJSON(w, http.StatusOK, map[string]any{
 		"id":           entry.Info.ID,
 		"name":         entry.Info.Name,
 		"version":      entry.Info.Version,
-		"kind":         string(entry.Info.Kind),
+		"kind":         kinds[0],
+		"kinds":        kinds,
 		"description":  entry.Info.Description,
 		"author":       entry.Info.Author,
 		"capabilities": entry.Info.Capabilities,
